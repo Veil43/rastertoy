@@ -30,7 +30,7 @@ else
 fi
 
 # Create the target directory if it doesn't exist
-mkdir -p "$TARGET_DIR"
+mkdir -p $TARGET_DIR
 
 # Compile the program using gcc
-g++ $COMMON_FLAGS $BUILD_FLAGS $SRC_DIR/sdl2_rastertoy.cpp $SRC_DIR/rastertoy.cpp -o "$TARGET_DIR/sdl2_rastertoy" $LIBS
+g++ $COMMON_FLAGS $BUILD_FLAGS $SRC_DIR/sdl2_rastertoy.cpp $SRC_DIR/rastertoy.cpp -o $TARGET_DIR/sdl2_rastertoy $LIBS
