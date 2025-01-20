@@ -11,7 +11,6 @@
 #include <algorithm>
 
 /*
-MISC: Undertand c/c++ unions
 // NOTE: Triangles gaps at "flat slopes" (caused by not transposing)
 // NOTE: Triangle Filling methods
 // NOTE: Transformations
@@ -51,6 +50,29 @@ static point_light globalOmniLight;
 static ambient_light globalAmbientLight;
 static uint8 globalObjectCursor = 0;
 static bool globalRenderNormals = false;
+static const std::string globalHelpString = 
+"\n\nControls:\n"
+"[View Modes]\n"
+"   w - to view model in Wireframe mode.\n"
+"   s - to view model in Solid     mode.\n"
+"   d - to view model in Solid and Wireframe mode.\n"
+"[Shading Modes]\n"
+"Only apply when Solid mode is active.\n"
+"   f - for flat shading.\n"
+"   g - for Gouraud shading.\n"
+"   p - for Phong shading.\n"
+"[Toggles]\n"
+"   n - to toggle vertex normals.\n"
+"[Movements]\n"
+"   q - to rotate current model to the left.\n"
+"   e - to rotate current model to the right.\n"
+"   space - to move camera up.\n"
+"   lctrl - to move camera down.\n"
+"   up/down/left/right - to move light source.\n"
+"[Model selection]\n"
+"   0 to 9 - to select models that have been loaded.\n"
+"\nPress H to see this again.\n\n"
+;
 
 // UTILITY SECTION STARTS HERE ----------------------------------------------------------------
 // Only these function make direct access to the screen buffer
@@ -734,6 +756,11 @@ ProcessInput(KeyCode Key)
     {
         globalRenderNormals = !globalRenderNormals;
     }
+    
+    if (Key == KEY_H)
+    {
+        std::cout << globalHelpString << std::endl;
+    }
 
     if (Key == KEY_1)
     {
@@ -811,6 +838,8 @@ OnLaunchSetup(PlatformScreenDevice screenDevice, const std::vector<std::string>&
     {
         worldObjects.push_back(CreateCube({0, 0, 12}, 4));
     }
+    
+    std::cout << globalHelpString << std::endl;
 }
 
 void

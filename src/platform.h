@@ -39,7 +39,7 @@ enum PlatformState
 
 enum KeyCode
 {
-    KEY_W, KEY_F, KEY_S, KEY_D,
+    KEY_W, KEY_F, KEY_S, KEY_D, KEY_H,
     KEY_G, KEY_Q, KEY_E, KEY_N, KEY_P,
     KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT,
     KEY_SPACE, KEY_LCTRL,

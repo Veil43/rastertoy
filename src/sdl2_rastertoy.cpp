@@ -298,6 +298,11 @@ void SDLSendKeyboardState()
         rastertoy::ProcessInput(KEY_N);
     }
 
+    if (keyState[SDL_SCANCODE_H])
+    {
+        rastertoy::ProcessInput(KEY_H);
+    }
+
     if (keyState[SDL_SCANCODE_P])
     {
         rastertoy::ProcessInput(KEY_P);
