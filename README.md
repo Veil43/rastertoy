@@ -50,14 +50,18 @@ Run:
 ```
 This will start the application with a default cube at the center of the screen. To bring up the controls press `h` and a help string will be printed to the terminal.<br>
 
-To load in you own models:
+To load in your own models:
 1. create a `data` directory in `rastertoy` and place you models inside.
 2. Run the program with the modles specified as arguments:
 ```batch
 .\release\sdl2_rastertoy.exe [obj1 obj2 obj3 ...]
 ```
 You can switch between models with keys `0-9`.<br>
-**Note:** Currently only `obj` file formats are supported for importing.
+Sample models can be found at:
+* [McGuire Computer Graphics Archive](https://casual-effects.com/data/)
+* [Florida State University: OBJ Files A 3D Object Format](https://people.sc.fsu.edu/~jburkardt/data/obj/obj.html)
+* [github.com: common-3d-test-models repository](https://github.com/alecjacobson/common-3d-test-models)
+**Note:** Currently only `OBJ` file formats are supported for importing.
 
 ## Disclaimer
 `Ratertoy`'s current implementation is not complete and has known bugs, using it outside the prescribed parameters may result in undefined behaviour.
