@@ -33,8 +33,8 @@ if /i "%MODE%"=="debug" (
     exit /b
 )
 
-mkdir TARGET_DIR
-pushd TARGET_DIR
+mkdir %TARGET_DIR%
+pushd %TARGET_DIR%
 cl %COMMON_FLAGS% %BUILD_FLAGS% %SRC_DIR%\sdl2_rastertoy.cpp %SRC_DIR%\rastertoy.cpp %LIBS%
 popd
 
