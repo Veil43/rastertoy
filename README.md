@@ -20,7 +20,6 @@
 <img src="images/utah_teapot.gif" alt="utah teapot phong gif" width="300" height="170">
 
 ## Render Option Examples
-<pre>Wireframe                                  Flat                                    Phong                                   Normals</pre>
 <img src="images/african_head_wireframe.gif" alt="african head wireframe gif" width="300" height="170">
 <img src="images/african_head_solid_flat.gif" alt="african head flat gif" width="300" height="170">
 <img src="images/african_head_solid_phong.gif" alt="utah teapot phong gif" width="300" height="170">

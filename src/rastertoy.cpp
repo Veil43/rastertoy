@@ -194,6 +194,7 @@ DrawWireframeTriangle(vertex3 v0, vertex3 v1, vertex3 v2, color4 lineColor = NO_
 }
 
 /*
+TODO: sort out the duplicated code int this function
 The hard gap problem was caused by a unifined scanline filling loop. Splitting it into
 top and bottom seems to have resolved the problem.
 
