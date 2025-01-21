@@ -10,18 +10,6 @@
 #include <vector>
 #include <algorithm>
 
-/*
-// NOTE: Triangles gaps at "flat slopes" (caused by not transposing)
-// NOTE: Triangle Filling methods
-// NOTE: Transformations
-// NOTE: Projection matrices
-// NOTE: Camera Space and world transformations
-// NOTE: Camera Rotation
-// NOTE: Explore dropping the fourth column of a 4x4 matrix of affine tranformations
-// NOTE: Starting with mat4x4 as a vec4f collection was a mistake and led to a rewrite
-// NOTE: Inverse roattion matrix for viewmatrix rotation has the same effect as non inverse
-//       rotation matrix.
-*/
 namespace rastertoy
 {
 enum RenderOption
@@ -81,7 +69,7 @@ namespace screen_draw
 static void
 ScaleNDCToScreen(vertex2 &v)
 {
-    v.point = clamp(v.point, -1 , 1); // Enforce range - 1 to 1
+    v.point = clamp(v.point, -1 , 1); // Enforce NDC range - 1 to 1
 
     v.point.x = ((v.point.x + 1) / 2) * (globalScreenDevice.width - 1);
     v.point.y = ((1 - v.point.y) / 2) * (globalScreenDevice.height - 1);
@@ -206,20 +194,15 @@ DrawWireframeTriangle(vertex3 v0, vertex3 v1, vertex3 v2, color4 lineColor = NO_
 }
 
 /*
-BUG FIXED: Passing the vertices by reference caused an unintended consequence,
-that is when said projected vertices are in an array Projected[], passing
-ShadeTrianglePhong(Pojected[i]...) will result in altering the vertex order in the
-array without changing the draw order. Thi obviously is BAD!
-
-The hard gap problem was caused by a unifine scanline filling loop. Splitting it into
+The hard gap problem was caused by a unifined scanline filling loop. Splitting it into
 top and bottom seems to have resolved the problem.
+
+What remains is a minor gap problem between the edges of tringaes.
 */
 static void
 ShadeTrianglePhong(const vertex3& v0, const vertex3& v1, const vertex3& v2, const point_light& light, real32 ambientIntensity)
 {
      /*
-     // TODO: Take notes on this algorithm
-     // TODO: Understand the 1/z crap
      // This is an old school scan line filling method
                                         P2
 
@@ -279,6 +262,7 @@ ShadeTrianglePhong(const vertex3& v0, const vertex3& v1, const vertex3& v2, cons
         real32 endZ = linear_interpolate(y, p0.point.y, 1/z0, p1.point.y, 1/z1);
 
         // Normal Interpolation ------------------------------------------------------------------------
+        // TODO: make a vec_interpolate function
         real32 startNormalX = linear_interpolate(y, p0.point.y, n0.x, p2.point.y, n2.x);
         real32 endNormalX = linear_interpolate(y, p0.point.y, n0.x, p1.point.y, n1.x);
         real32 startNormalY = linear_interpolate(y, p0.point.y, n0.y, p2.point.y, n2.y);
@@ -524,11 +508,13 @@ ProcessTriangle(int32 index, Object3D *O, const mat4x4& transform, const mat4x4&
     int in1 = O->ObjectModel->normalIndices[index * 3 + 1];
     int in2 = O->ObjectModel->normalIndices[index * 3 + 2];
 
+    // NOTE: maybe we should fuse position normal and color in Object3D to just have 1 vertex3
     vec3f v0 = O->ObjectModel->VertexPositions[i0];
-    color4 c0 = O->ObjectModel->VertexColors[i0];
     vec3f v1 = O->ObjectModel->VertexPositions[i1];
-    color4 c1 = O->ObjectModel->VertexColors[i1];
     vec3f v2 = O->ObjectModel->VertexPositions[i2];
+
+    color4 c0 = O->ObjectModel->VertexColors[i0];
+    color4 c1 = O->ObjectModel->VertexColors[i1];
     color4 c2 = O->ObjectModel->VertexColors[i2];
 
     vec3f n0 = O->ObjectModel->vertexNormals[in0];
@@ -553,10 +539,10 @@ ProcessTriangle(int32 index, Object3D *O, const mat4x4& transform, const mat4x4&
     n1 = n1 * globalCamera.CameraRotation();
     n2 = n2 * globalCamera.CameraRotation();
 
-    ClippedTriangle T = {};
-    T.IsIn = false;
+    ClippedTriangle result = {};
+    result.IsIn = false;
     // Cull Backfaces
-    if (IsBackface(v0, v1, v2) && cullBackfaces) return T;
+    if (IsBackface(v0, v1, v2) && cullBackfaces) return result;
     return ClipTriangle({v0, n0, c0}, {v1, n1, c1}, {v2, n2, c2}, globalCamera.CameraFrustum());
 }
 
@@ -809,7 +795,7 @@ ProcessInput(KeyCode Key)
 }
 
 void
-OnLaunchSetup(PlatformScreenDevice screenDevice, const std::vector<std::string>& objects)
+OnLaunch(PlatformScreenDevice screenDevice, const std::vector<std::string>& objects)
 {
     globalScreenDevice = screenDevice;
     globalDepthBuffer = new real32[globalScreenDevice.width * globalScreenDevice.height];

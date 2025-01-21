@@ -56,7 +56,7 @@ struct PlatformMouseDevice
 namespace rastertoy
 {
 void UpdateRenderLoop(real32 DeltaTime); // DeltaTime in seconds
-void OnLaunchSetup(PlatformScreenDevice Screen, const std::vector<std::string>& objects);
+void OnLaunch(PlatformScreenDevice Screen, const std::vector<std::string>& objects);
 void ProcessInput(KeyCode Key);
 }
 

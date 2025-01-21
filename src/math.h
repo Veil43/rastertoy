@@ -6,6 +6,8 @@
 #include <iomanip>
 #include <algorithm>
 
+// TODO: use templates
+
 const float pi = 3.14159f;
 const float infinity = std::numeric_limits<float>::infinity();
 
