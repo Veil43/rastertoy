@@ -4,6 +4,25 @@
 * OBJ file loading
 * Three shading modes: Flat, Gouraud and Phong
 
+## Renders
+**XYZ Dragon:** <br>
+<img src="images/xyz_dragon.gif" alt="xyz_dragon gif" width="500" height="300">
+<!-- ![](images/xyz_dragon.gif) -->
+
+**Happy:** <br>
+<img src="images/happy.gif" alt="happy gif" width="500" height="300">
+
+**Utah Teapot:** <br>
+<img src="images/utah_teapot_wireframe.gif" alt="utah teapot wireframe gif" width="500" height="300">
+<img src="images/utah_teapot.gif" alt="utah teapot phong gif" width="500" height="300">
+
+## Render Option Examples
+<img src="images/african_head_wireframe.gif" alt="african head wireframe gif" width="500" height="300">
+<img src="images/african_head_solid_flat.gif" alt="african head flat gif" width="500" height="300">
+<img src="images/african_head_solid_phong.gif" alt="utah teapot phong gif" width="500" height="300">
+<img src="images/african_head_flat_normals.gif" alt="utah teapot normals gif" width="500" height="300">
+
+
 ## Building guide
 **Note:** This program uses SDL2 for windowing to make cross platform compilation as seamless as possible. However, the program is only tested and provides .lib files for `SDL2 version 2.30.9-VC`. If you want to compile on linux you will need to install the library independently.
 

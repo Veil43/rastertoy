@@ -67,7 +67,7 @@ main(int argc, char *argv[])
                                sdlRenderResources.aspectRatio,
                                sdlRenderResources.bytesPerPixel);
 
-    rastertoy::OnLaunchSetup(ScreenDevice, objFiles);
+    rastertoy::OnLaunch(ScreenDevice, objFiles);
 
     // Main Loop ---------------------------------------------------------------
     unsigned long long lastCounter = SDL_GetPerformanceCounter();
