@@ -5,21 +5,15 @@
 * Three shading modes: Flat, Gouraud and Phong
 
 ## Renders
-**XYZ Dragon:** <br>
+
 <img src="images/xyz_dragon.gif" alt="xyz_dragon gif" width="300" height="170">
-<!-- ![](images/xyz_dragon.gif) -->
-
-**Happy:** <br>
 <img src="images/happy.gif" alt="happy gif" width="300" height="170">
-
-**Stanford Bunny:** <br>
 <img src="images/stanford_bunny.gif" alt="bunny gif" width="300" height="170">
-
-**Utah Teapot:** <br>
 <img src="images/utah_teapot_wireframe.gif" alt="utah teapot wireframe gif" width="300" height="170">
 <img src="images/utah_teapot.gif" alt="utah teapot phong gif" width="300" height="170">
 
 ## Render Option Examples
+
 <img src="images/african_head_wireframe.gif" alt="african head wireframe gif" width="300" height="170">
 <img src="images/african_head_solid_flat.gif" alt="african head flat gif" width="300" height="170">
 <img src="images/african_head_solid_phong.gif" alt="utah teapot phong gif" width="300" height="170">
