@@ -43,8 +43,8 @@ For further instructions, refer to [Microsoft's official documentation](https://
 sudo apt-get install libsdl2-dev
 ```
 2. Compile the program by running the following commands:
-* `./build.bat release` for the release build.
-* `./build.bat debug` for the debug build.
+* `./build.sh release` for the release build.
+* `./build.sh debug` for the debug build.
 
 The resulting executables will be placed in the `./release` or `./debug` folder.
 
