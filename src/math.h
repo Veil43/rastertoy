@@ -89,7 +89,7 @@ operator<<(std::ostream &os, const vec4f& v)
     return os;
 }
 
-inline constexpr vec2f &
+inline vec2f &
 operator+=(vec2f &v, const vec2f &u) noexcept
 {
     v.x += u.x;
@@ -97,7 +97,7 @@ operator+=(vec2f &v, const vec2f &u) noexcept
     return v;
 }
 
-inline constexpr vec3f &
+inline vec3f &
 operator+=(vec3f &v, const vec3f &u) noexcept
 {
     v.x += u.x;
@@ -106,7 +106,7 @@ operator+=(vec3f &v, const vec3f &u) noexcept
     return v;
 }
 
-inline constexpr vec4f &
+inline vec4f &
 operator+=(vec4f &v, const vec4f &u) noexcept
 {
     v.x += u.x;
@@ -116,7 +116,7 @@ operator+=(vec4f &v, const vec4f &u) noexcept
     return v;
 }
 
-inline constexpr vec2f &
+inline vec2f &
 operator-=(vec2f &v, const vec2f &u) noexcept
 {
     v.x -= u.x;
@@ -124,7 +124,7 @@ operator-=(vec2f &v, const vec2f &u) noexcept
     return v;
 }
 
-inline constexpr vec3f &
+inline vec3f &
 operator-=(vec3f &v, const vec3f &u) noexcept
 {
     v.x -= u.x;
@@ -133,7 +133,7 @@ operator-=(vec3f &v, const vec3f &u) noexcept
     return v;
 }
 
-inline constexpr vec4f &
+inline vec4f &
 operator-=(vec4f &v, const vec4f &u) noexcept
 {
     v.x -= u.x;
@@ -143,7 +143,7 @@ operator-=(vec4f &v, const vec4f &u) noexcept
     return v;
 }
 
-inline constexpr vec2f& 
+inline vec2f& 
 operator*=(vec2f& v, float lambda) noexcept
 {
     v.x *= lambda;
@@ -151,7 +151,7 @@ operator*=(vec2f& v, float lambda) noexcept
     return v;
 }
 
-inline constexpr vec3f& 
+inline vec3f& 
 operator*=(vec3f& v, float lambda) noexcept
 {
     v.x *= lambda;
@@ -160,7 +160,7 @@ operator*=(vec3f& v, float lambda) noexcept
     return v;
 }
 
-inline constexpr vec4f& 
+inline vec4f& 
 operator*=(vec4f& v, float lambda) noexcept
 {
     v.x *= lambda;
@@ -170,7 +170,7 @@ operator*=(vec4f& v, float lambda) noexcept
     return v;
 }
 
-inline constexpr vec2f& 
+inline vec2f& 
 operator/=(vec2f& v, float lambda) noexcept
 {
     v.x /= lambda;
@@ -178,7 +178,7 @@ operator/=(vec2f& v, float lambda) noexcept
     return v;
 }
 
-inline constexpr vec3f& 
+inline vec3f& 
 operator/=(vec3f& v, float lambda) noexcept
 {
     v.x /= lambda;
@@ -187,7 +187,7 @@ operator/=(vec3f& v, float lambda) noexcept
     return v;
 }
 
-inline constexpr vec4f &
+inline vec4f &
 operator/=(vec4f &v, float lambda) noexcept
 {
     v.x /= lambda;
@@ -241,7 +241,7 @@ normalize(vec4f &v) noexcept
     return v;
 }
 
-inline constexpr vec3f &
+inline vec3f &
 clamp01(vec3f &p) noexcept
 {
     p.x = p.x > 1 ? 1 :
@@ -259,7 +259,7 @@ clamp01(vec3f &p) noexcept
     return p;
 }
 
-inline constexpr vec3f &
+inline vec3f &
 clamp(vec3f &p, float min, float max) noexcept
 {
     p.x = p.x > max ? max :
@@ -277,7 +277,7 @@ clamp(vec3f &p, float min, float max) noexcept
     return p;
 }
 
-inline constexpr vec2f 
+inline vec2f 
 clamp(vec2f &p, double min, double max) noexcept
 {
     p.x = p.x > max ? max :
@@ -291,7 +291,7 @@ clamp(vec2f &p, double min, double max) noexcept
     return p;
 }
 
-inline constexpr double 
+inline double 
 clamp(double p, double min, double max) noexcept
 {
     p = p > max ? max :
@@ -301,7 +301,7 @@ clamp(double p, double min, double max) noexcept
     return p;
 }
 
-inline constexpr vec3f
+inline vec3f
 average(const vec3f& v0, const vec3f& v1, const vec3f& v2)
 {
     return
@@ -403,7 +403,7 @@ plane_sphere_intersection_check(const plane& p, const sphere& s)
     return plane_point_intersect(p, s.center);
 }
 
-inline constexpr point3f
+inline point3f
 plane_line_intersect(const plane& P, const line3d& L)
 {
     float t = (-P.distance - dot(P.normal, L.A)) / dot(P.normal, (L.B - L.A));
@@ -483,27 +483,27 @@ operator*(const vec3f &v, const mat3x3 &T)
     };
 }
 
-inline constexpr vec3f
+inline vec3f
 operator*(const vec3f &v, const mat4x4 &T)
 {
     vec4f result = vec4f{v.x, v.y, v.z, 1} * T;
     return {result.x, result.y, result.z};
 }
 
-inline constexpr vec3f&
+inline vec3f&
 operator*=(vec3f &v, const mat4x4 &T)
 {
     v = v * T;
     return v;
 }
 
-inline constexpr mat4x4
+inline mat4x4
 operator*(const mat4x4 &m, const mat4x4 &T)
 {
     return { m.r0 * T, m.r1 * T, m.r2 * T, m.r3 * T };
 }
 
-inline constexpr mat4x4 &
+inline mat4x4 &
 operator*(float n, mat4x4 &m)
 {
     m.r0 *= n;
@@ -513,7 +513,7 @@ operator*(float n, mat4x4 &m)
     return m;
 }
 
-inline constexpr mat4x4 &
+inline mat4x4 &
 operator*(mat4x4 &m, float n)
 {
     m.r0 *= n;
@@ -523,21 +523,21 @@ operator*(mat4x4 &m, float n)
     return m;
 }
 
-inline constexpr mat4x4
+inline mat4x4
 operator*=(mat4x4& m, const mat4x4& T)
 {
     m = m * T;
     return m;
 }
 
-inline constexpr mat4x4 &
+inline mat4x4 &
 operator*=(mat4x4& m, float n)
 {
     m = m * n;
     return m;
 }
 
-inline constexpr mat4x4
+inline mat4x4
 transpose(const mat4x4& m)
 {
     mat4x4 results = m;
@@ -553,7 +553,7 @@ transpose(const mat4x4& m)
     return results;
 }
 
-inline constexpr mat3x3
+inline mat3x3
 transpose(const mat3x3& m)
 {
     return {};

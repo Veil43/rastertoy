@@ -33,4 +33,4 @@ fi
 mkdir -p $TARGET_DIR
 
 # Compile the program using gcc
-g++ $COMMON_FLAGS $BUILD_FLAGS $SRC_DIR/sdl2_rastertoy.cpp $SRC_DIR/rastertoy.cpp -o $TARGET_DIR/sdl2_rastertoy $LIBS
+g++ --std=c++11 $COMMON_FLAGS $BUILD_FLAGS $SRC_DIR/sdl2_rastertoy.cpp $SRC_DIR/rastertoy.cpp -o $TARGET_DIR/sdl2_rastertoy $LIBS

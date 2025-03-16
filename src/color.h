@@ -102,7 +102,7 @@ operator<<(std::ostream& o, const color4& c)
     return o;
 }
 
-inline constexpr color4
+inline color4
 operator*(float i, const color4& c)
 {
     float r = clamp(i * c.r, 0, 255);
@@ -117,13 +117,13 @@ operator*(float i, const color4& c)
     };
 }
 
-inline constexpr color4
+inline color4
 operator*(const color4& c, float i)
 {
     return i * c;
 }
 
-inline constexpr color4&
+inline color4&
 operator*=(color4& c, float i)
 {
     c = i * c;
