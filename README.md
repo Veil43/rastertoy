@@ -81,4 +81,4 @@ Sample models can be found at:
 **Note:** Currently only `OBJ` file formats are supported for importing.
 
 ## Disclaimer
-`Ratertoy`'s current implementation is not complete and has known bugs, using it outside the prescribed parameters may result in undefined behaviour.
+`Ratertoy`'s current implementation is not complete and has known bugs, using it outside the prescribed parameters may result in unpredictable behaviour.
