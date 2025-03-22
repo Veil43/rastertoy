@@ -614,6 +614,11 @@ get_z_rotation_mat_inverse(float deg)
     return transpose(get_z_rotation_mat(deg));
 }
 
+#ifdef USELESS_MATINVERSE
+/*
+DO NOT USE THIS: It is an incomplete implementation and even if it weren't it is IMPRACTAL for most use cases.
+Honestly I have no idea why I spent time making it but since it's here just leave it.
+*/
 mat4x4
 gauss_inverse(const mat4x4& matrix)
 {
@@ -699,5 +704,6 @@ gauss_inverse(const mat4x4& matrix)
 
     return identity;
 }
+#endif
 
 #endif // MATH_H
