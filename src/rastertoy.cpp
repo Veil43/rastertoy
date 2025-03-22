@@ -28,15 +28,15 @@ enum ShadingOption
 
 // GLOBAL VARIABLES  --------------------------------------------------------------------
 static PlatformScreenDevice globalScreenDevice;
-static real32 *globalDepthBuffer;
-static real32 globalDeltaTime;
+static f32 *globalDepthBuffer;
+static f32 globalDeltaTime;
 static std::vector<Object3D *> worldObjects;
 static camera globalCamera;
 static RenderOption globalRenderMode;
 static ShadingOption globalShadingMode;
 static point_light globalOmniLight;
 static ambient_light globalAmbientLight;
-static uint8 globalObjectCursor = 0;
+static u8 globalObjectCursor = 0;
 static bool globalRenderNormals = false;
 static const std::string globalHelpString = 
 "\n\nControls:\n"
@@ -76,7 +76,7 @@ ScaleNDCToScreen(vertex2 &v)
 }
 
 static void
-PutPixelNDC(vertex2 vertex, real32 z_value)
+PutPixelNDC(vertex2 vertex, f32 z_value)
 {
     if (vertex.point.y >  1 || vertex.point.x >  1 ||
         vertex.point.y < -1 || vertex.point.x < -1  )
@@ -86,8 +86,8 @@ PutPixelNDC(vertex2 vertex, real32 z_value)
 
     ScaleNDCToScreen(vertex);
 
-    uint32 *tempBuffer = (uint32 *) globalScreenDevice.BufferMemory;
-    uint32 index = globalScreenDevice.width * static_cast<int>(vertex.point.y) + static_cast<int>(vertex.point.x);
+    u32 *tempBuffer = (u32 *) globalScreenDevice.BufferMemory;
+    u32 index = globalScreenDevice.width * static_cast<int>(vertex.point.y) + static_cast<int>(vertex.point.x);
 
     if (z_value > globalDepthBuffer[index])
     {
@@ -99,10 +99,10 @@ PutPixelNDC(vertex2 vertex, real32 z_value)
 static vertex2
 ProjectVertexNDC(const vertex3& v)
 {
-    real32 d = globalCamera.CameraOrigin().z + globalCamera.CameraFocalLength();
+    f32 d = globalCamera.CameraOrigin().z + globalCamera.CameraFocalLength();
 
-    real32 py = (v.point.y * d) / v.point.z;;
-    real32 px = (v.point.x * d) / v.point.z;;
+    f32 py = (v.point.y * d) / v.point.z;;
+    f32 px = (v.point.x * d) / v.point.z;;
 
     // Projects from viewport to NDC
     py = ((py * 2.0f) / globalCamera.CameraViewportHeight());
@@ -114,7 +114,7 @@ ProjectVertexNDC(const vertex3& v)
 static void
 BlackoutScreenBuffer(color4 color)
 {
-    uint32 *tempBuffer = (uint32 *) globalScreenDevice.BufferMemory;
+    u32 *tempBuffer = (u32 *) globalScreenDevice.BufferMemory;
     std::fill(tempBuffer,
             tempBuffer + (globalScreenDevice.width * globalScreenDevice.height),
             color_uint32(color));
@@ -137,8 +137,8 @@ DrawLine(vertex2 v0, vertex2 v1, color4 line_color = NO_COLOR, int z_priority = 
     bool interpolate = line_color == cmp;
 
     // assumes the points are between -1 to 1
-    real32 dy = 2.0f / globalScreenDevice.height;
-    real32 dx = 2.0f / globalScreenDevice.width;
+    f32 dy = 2.0f / globalScreenDevice.height;
+    f32 dx = 2.0f / globalScreenDevice.width;
 
     bool steep = std::abs(v0.point.y - v1.point.y) > std::abs(v0.point.x - v1.point.x);
     if (steep) // Transpose
@@ -153,9 +153,9 @@ DrawLine(vertex2 v0, vertex2 v1, color4 line_color = NO_COLOR, int z_priority = 
     // y (x+dx) = m(x + dx) + c => mx + c + mdx
     // y (x+1) = y(x) + mdx
     // y (x) = x0
-    for (real32 x = v0.point.x; x <= v1.point.x; x+=dx)
+    for (f32 x = v0.point.x; x <= v1.point.x; x+=dx)
     {
-        real32 y = linear_interpolate(x, v0.point.x, v0.point.y, v1.point.x, v1.point.y);
+        f32 y = linear_interpolate(x, v0.point.x, v0.point.y, v1.point.x, v1.point.y);
 
         color4 color = interpolate ? linear_interpolate_color(x, v0.point.x, v0.color, v1.point.x, v1.color)
                                    : line_color;
@@ -201,7 +201,7 @@ top and bottom seems to have resolved the problem.
 What remains is a minor gap problem between the edges of tringaes.
 */
 static void
-ShadeTrianglePhong(const vertex3& v0, const vertex3& v1, const vertex3& v2, const point_light& light, real32 ambientIntensity)
+ShadeTrianglePhong(const vertex3& v0, const vertex3& v1, const vertex3& v2, const point_light& light, f32 ambientIntensity)
 {
      /*
      // This is an old school scan line filling method
@@ -214,17 +214,17 @@ ShadeTrianglePhong(const vertex3& v0, const vertex3& v1, const vertex3& v2, cons
     // TECNIQUE: Go from P0 to P2 and to P1 starting at Height = P0.y  but only up to Height = P1.y
     // Then Go from P0 to P2 and from P1 to P2 starting at Height = P1.y ending at P2.y
     */
-    const real32 dy = 2.0f / globalScreenDevice.height;
-    const real32 dx = 2.0f / globalScreenDevice.width;
-    const real32 d = globalCamera.CameraFocalLength();
+    const f32 dy = 2.0f / globalScreenDevice.height;
+    const f32 dx = 2.0f / globalScreenDevice.width;
+    const f32 d = globalCamera.CameraFocalLength();
 
     vertex2 p0 = screen_draw::ProjectVertexNDC(v0);
     vertex2 p1 = screen_draw::ProjectVertexNDC(v1);
     vertex2 p2 = screen_draw::ProjectVertexNDC(v2);
 
-    real32 z0 = v0.point.z;
-    real32 z1 = v1.point.z;
-    real32 z2 = v2.point.z;
+    f32 z0 = v0.point.z;
+    f32 z1 = v1.point.z;
+    f32 z2 = v2.point.z;
 
     vec3f n0 = v0.normal;
     vec3f n1 = v1.normal;
@@ -254,22 +254,22 @@ ShadeTrianglePhong(const vertex3& v0, const vertex3& v1, const vertex3& v2, cons
     bool interpolate01 = ((p0.color != p1.color));
     bool interpolate12 = ((p1.color != p2.color));
 
-    for (real32 y = p0.point.y; y < p1.point.y; y+=dy)
+    for (f32 y = p0.point.y; y < p1.point.y; y+=dy)
     {
-        real32 startX = linear_interpolate(y, p0.point.y, p0.point.x, p2.point.y, p2.point.x);
-        real32 endX = linear_interpolate(y, p0.point.y, p0.point.x, p1.point.y, p1.point.x);
+        f32 startX = linear_interpolate(y, p0.point.y, p0.point.x, p2.point.y, p2.point.x);
+        f32 endX = linear_interpolate(y, p0.point.y, p0.point.x, p1.point.y, p1.point.x);
 
-        real32 startZ = linear_interpolate(y, p0.point.y, 1/z0, p2.point.y, 1/z2);
-        real32 endZ = linear_interpolate(y, p0.point.y, 1/z0, p1.point.y, 1/z1);
+        f32 startZ = linear_interpolate(y, p0.point.y, 1/z0, p2.point.y, 1/z2);
+        f32 endZ = linear_interpolate(y, p0.point.y, 1/z0, p1.point.y, 1/z1);
 
         // Normal Interpolation ------------------------------------------------------------------------
         // TODO: make a vec_interpolate function
-        real32 startNormalX = linear_interpolate(y, p0.point.y, n0.x, p2.point.y, n2.x);
-        real32 endNormalX = linear_interpolate(y, p0.point.y, n0.x, p1.point.y, n1.x);
-        real32 startNormalY = linear_interpolate(y, p0.point.y, n0.y, p2.point.y, n2.y);
-        real32 endNormalY = linear_interpolate(y, p0.point.y, n0.y, p1.point.y, n1.y);
-        real32 startNormalZ = linear_interpolate(y, p0.point.y, n0.z, p2.point.y, n2.z);
-        real32 endNormalZ = linear_interpolate(y, p0.point.y, n0.z, p1.point.y, n1.z);
+        f32 startNormalX = linear_interpolate(y, p0.point.y, n0.x, p2.point.y, n2.x);
+        f32 endNormalX = linear_interpolate(y, p0.point.y, n0.x, p1.point.y, n1.x);
+        f32 startNormalY = linear_interpolate(y, p0.point.y, n0.y, p2.point.y, n2.y);
+        f32 endNormalY = linear_interpolate(y, p0.point.y, n0.y, p1.point.y, n1.y);
+        f32 startNormalZ = linear_interpolate(y, p0.point.y, n0.z, p2.point.y, n2.z);
+        f32 endNormalZ = linear_interpolate(y, p0.point.y, n0.z, p1.point.y, n1.z);
 
         // Color Interpolation -------------------------------------------------------------------------
         color4 startColor = interpolate02 ? linear_interpolate_color(y , p0.point.y, p0.color, p2.point.y, p2.color) : p0.color;
@@ -285,14 +285,14 @@ ShadeTrianglePhong(const vertex3& v0, const vertex3& v1, const vertex3& v2, cons
             std::swap(startColor, endColor);
         }
 
-        for (real32 x = startX; x <= endX; x+=dx)
+        for (f32 x = startX; x <= endX; x+=dx)
         {
             color4 col = (interpolate02 || interpolate01) ? linear_interpolate_color(x, startX, startColor, endX, endColor) : startColor;
-            const real32 z = linear_interpolate(x, startX, 1/startZ, endX, 1/endZ);
+            const f32 z = linear_interpolate(x, startX, 1/startZ, endX, 1/endZ);
 
-            const real32 normal_x = linear_interpolate(x, startX, startNormalX, endX, endNormalX);
-            const real32 normal_y = linear_interpolate(x, startX, startNormalY, endX, endNormalY);
-            const real32 normal_z = linear_interpolate(x, startX, startNormalZ, endX, endNormalZ);
+            const f32 normal_x = linear_interpolate(x, startX, startNormalX, endX, endNormalX);
+            const f32 normal_y = linear_interpolate(x, startX, startNormalY, endX, endNormalY);
+            const f32 normal_z = linear_interpolate(x, startX, startNormalZ, endX, endNormalZ);
 
             vertex3 p;
             p.point.x = x*d/z;
@@ -301,28 +301,28 @@ ShadeTrianglePhong(const vertex3& v0, const vertex3& v1, const vertex3& v2, cons
             p.normal = {normal_x, normal_y, normal_z};
             p.normal = normalize(p.normal);
 
-            real32 intensity = (ambientIntensity +  light.GetIntensityPhong(p, globalCamera.CameraOrigin() - p.point));
+            f32 intensity = (ambientIntensity +  light.GetIntensityPhong(p, globalCamera.CameraOrigin() - p.point));
             col *= intensity;
 
             screen_draw::PutPixelNDC({col, x, y}, 1/z);
         }
     }
 
-    for (real32 y = p1.point.y; y <= p2.point.y; y+=dy)
+    for (f32 y = p1.point.y; y <= p2.point.y; y+=dy)
     {
-        real32 startX = linear_interpolate(y, p0.point.y, p0.point.x, p2.point.y, p2.point.x);
-        real32 endX = linear_interpolate(y, p1.point.y, p1.point.x, p2.point.y, p2.point.x);
+        f32 startX = linear_interpolate(y, p0.point.y, p0.point.x, p2.point.y, p2.point.x);
+        f32 endX = linear_interpolate(y, p1.point.y, p1.point.x, p2.point.y, p2.point.x);
 
-        real32 startZ = linear_interpolate(y, p0.point.y, 1/z0, p2.point.y, 1/z2);
-        real32 endZ = linear_interpolate(y, p1.point.y, 1/z1, p2.point.y, 1/z2);
+        f32 startZ = linear_interpolate(y, p0.point.y, 1/z0, p2.point.y, 1/z2);
+        f32 endZ = linear_interpolate(y, p1.point.y, 1/z1, p2.point.y, 1/z2);
 
         // Normal Interpolation ------------------------------------------------------------------------
-        real32 startNormalX = linear_interpolate(y, p0.point.y, n0.x, p2.point.y, n2.x);
-        real32 endNormalX = linear_interpolate(y, p1.point.y, n1.x, p2.point.y, n2.x);
-        real32 startNormalY = linear_interpolate(y, p0.point.y, n0.y, p2.point.y, n2.y);
-        real32 endNormalY = linear_interpolate(y, p1.point.y, n1.y, p2.point.y, n2.y);
-        real32 startNormalZ = linear_interpolate(y, p0.point.y, n0.z, p2.point.y, n2.z);
-        real32 endNormalZ = linear_interpolate(y, p1.point.y, n1.z, p2.point.y, n2.z);
+        f32 startNormalX = linear_interpolate(y, p0.point.y, n0.x, p2.point.y, n2.x);
+        f32 endNormalX = linear_interpolate(y, p1.point.y, n1.x, p2.point.y, n2.x);
+        f32 startNormalY = linear_interpolate(y, p0.point.y, n0.y, p2.point.y, n2.y);
+        f32 endNormalY = linear_interpolate(y, p1.point.y, n1.y, p2.point.y, n2.y);
+        f32 startNormalZ = linear_interpolate(y, p0.point.y, n0.z, p2.point.y, n2.z);
+        f32 endNormalZ = linear_interpolate(y, p1.point.y, n1.z, p2.point.y, n2.z);
 
         // Color Interpolation -------------------------------------------------------------------------
         color4 startColor = interpolate02 ? linear_interpolate_color(y , p0.point.y, p0.color, p2.point.y, p2.color) : p0.color;
@@ -338,14 +338,14 @@ ShadeTrianglePhong(const vertex3& v0, const vertex3& v1, const vertex3& v2, cons
             std::swap(startColor, endColor);
         }
 
-        for (real32 x = startX; x <= endX; x+=dx)
+        for (f32 x = startX; x <= endX; x+=dx)
         {
             color4 col = (interpolate02 || interpolate12) ? linear_interpolate_color(x, startX, startColor, endX, endColor) : startColor;
-            const real32 z = linear_interpolate(x, startX, 1/startZ, endX, 1/endZ);
+            const f32 z = linear_interpolate(x, startX, 1/startZ, endX, 1/endZ);
 
-            const real32 normal_x = linear_interpolate(x, startX, startNormalX, endX, endNormalX);
-            const real32 normal_y = linear_interpolate(x, startX, startNormalY, endX, endNormalY);
-            const real32 normal_z = linear_interpolate(x, startX, startNormalZ, endX, endNormalZ);
+            const f32 normal_x = linear_interpolate(x, startX, startNormalX, endX, endNormalX);
+            const f32 normal_y = linear_interpolate(x, startX, startNormalY, endX, endNormalY);
+            const f32 normal_z = linear_interpolate(x, startX, startNormalZ, endX, endNormalZ);
 
             vertex3 p;
             p.point.x = x*d/z;
@@ -353,7 +353,7 @@ ShadeTrianglePhong(const vertex3& v0, const vertex3& v1, const vertex3& v2, cons
             p.point.z = z;
             p.normal = {normal_x, normal_y, normal_z};
             p.normal = normalize(p.normal);
-            real32 intensity = (ambientIntensity +  light.GetIntensityPhong(p, globalCamera.CameraOrigin() - p.point));
+            f32 intensity = (ambientIntensity +  light.GetIntensityPhong(p, globalCamera.CameraOrigin() - p.point));
             col *= intensity;
 
            screen_draw::PutPixelNDC({col, x, y}, 1/z);
@@ -362,22 +362,22 @@ ShadeTrianglePhong(const vertex3& v0, const vertex3& v1, const vertex3& v2, cons
 }
 
 static void
-ShadeTriangleGouraudFlat(const vertex3& v0, const vertex3& v1, const vertex3& v2, const point_light& light, real32 ambientIntensity, ShadingOption mode = SHADE_FLAT)
+ShadeTriangleGouraudFlat(const vertex3& v0, const vertex3& v1, const vertex3& v2, const point_light& light, f32 ambientIntensity, ShadingOption mode = SHADE_FLAT)
 {
-    const real32 dy = 2.0f / globalScreenDevice.height;
-    const real32 dx = 2.0f / globalScreenDevice.width;
+    const f32 dy = 2.0f / globalScreenDevice.height;
+    const f32 dx = 2.0f / globalScreenDevice.width;
 
     vertex2 p0 = screen_draw::ProjectVertexNDC(v0);
     vertex2 p1 = screen_draw::ProjectVertexNDC(v1);
     vertex2 p2 = screen_draw::ProjectVertexNDC(v2);
 
-    real32 z0 = v0.point.z;
-    real32 z1 = v1.point.z;
-    real32 z2 = v2.point.z;
+    f32 z0 = v0.point.z;
+    f32 z1 = v1.point.z;
+    f32 z2 = v2.point.z;
 
     if (mode == SHADE_FLAT)
     {
-        real32 intensity = light.GetIntensityFlat(cross(v1.point - v0.point, v2.point - v0.point), average(v0.point, v1.point, v2.point));
+        f32 intensity = light.GetIntensityFlat(cross(v1.point - v0.point, v2.point - v0.point), average(v0.point, v1.point, v2.point));
         p0.color = p0.color * (ambientIntensity + intensity);
         p1.color = p1.color * (ambientIntensity + intensity);
         p2.color = p2.color * (ambientIntensity + intensity);
@@ -410,13 +410,13 @@ ShadeTriangleGouraudFlat(const vertex3& v0, const vertex3& v1, const vertex3& v2
     bool interpolate01 = ((p0.color != p1.color));
     bool interpolate12 = ((p1.color != p2.color));
 
-    for (real32 y = p0.point.y; y < p1.point.y; y+=dy)
+    for (f32 y = p0.point.y; y < p1.point.y; y+=dy)
     {
-        real32 startX = linear_interpolate(y, p0.point.y, p0.point.x, p2.point.y, p2.point.x);
-        real32 endX = linear_interpolate(y, p0.point.y, p0.point.x, p1.point.y, p1.point.x);
+        f32 startX = linear_interpolate(y, p0.point.y, p0.point.x, p2.point.y, p2.point.x);
+        f32 endX = linear_interpolate(y, p0.point.y, p0.point.x, p1.point.y, p1.point.x);
 
-        real32 startZ = linear_interpolate(y, p0.point.y, 1/z0, p2.point.y, 1/z2);
-        real32 endZ = linear_interpolate(y, p0.point.y, 1/z0, p1.point.y, 1/z1);
+        f32 startZ = linear_interpolate(y, p0.point.y, 1/z0, p2.point.y, 1/z2);
+        f32 endZ = linear_interpolate(y, p0.point.y, 1/z0, p1.point.y, 1/z1);
 
         color4 startColor = interpolate02 ? linear_interpolate_color(y , p0.point.y, p0.color, p2.point.y, p2.color) : p0.color;
         color4 endColor = interpolate01 ? linear_interpolate_color(y, p0.point.y, p0.color, p1.point.y, p1.color) : p1.color;
@@ -428,21 +428,21 @@ ShadeTriangleGouraudFlat(const vertex3& v0, const vertex3& v1, const vertex3& v2
             std::swap(startColor, endColor);
         }
 
-        for (real32 x = startX; x <= endX; x+=dx)
+        for (f32 x = startX; x <= endX; x+=dx)
         {
             color4 col = (interpolate02 || interpolate01) ? linear_interpolate_color(x, startX, startColor, endX, endColor) : startColor;
-            const real32 z = linear_interpolate(x, startX, 1/startZ, endX, 1/endZ);
+            const f32 z = linear_interpolate(x, startX, 1/startZ, endX, 1/endZ);
             screen_draw::PutPixelNDC({col, x, y}, 1/z);
         }
     }
 
-    for (real32 y = p1.point.y; y <= p2.point.y; y+=dy)
+    for (f32 y = p1.point.y; y <= p2.point.y; y+=dy)
     {
-        real32 startX = linear_interpolate(y, p0.point.y, p0.point.x, p2.point.y, p2.point.x);
-        real32 endX = linear_interpolate(y, p1.point.y, p1.point.x, p2.point.y, p2.point.x);
+        f32 startX = linear_interpolate(y, p0.point.y, p0.point.x, p2.point.y, p2.point.x);
+        f32 endX = linear_interpolate(y, p1.point.y, p1.point.x, p2.point.y, p2.point.x);
 
-        real32 startZ = linear_interpolate(y, p0.point.y, 1/z0, p2.point.y, 1/z2);
-        real32 endZ = linear_interpolate(y, p1.point.y, 1/z1, p2.point.y, 1/z2);
+        f32 startZ = linear_interpolate(y, p0.point.y, 1/z0, p2.point.y, 1/z2);
+        f32 endZ = linear_interpolate(y, p1.point.y, 1/z1, p2.point.y, 1/z2);
 
         color4 startColor = interpolate02 ? linear_interpolate_color(y , p0.point.y, p0.color, p2.point.y, p2.color) : p0.color;
         color4 endColor = interpolate12 ? linear_interpolate_color(y, p1.point.y, p1.color, p2.point.y, p2.color) : p1.color;
@@ -454,17 +454,17 @@ ShadeTriangleGouraudFlat(const vertex3& v0, const vertex3& v1, const vertex3& v2
             std::swap(startColor, endColor);
         }
 
-        for (real32 x = startX; x <= endX; x+=dx)
+        for (f32 x = startX; x <= endX; x+=dx)
         {
             color4 col = (interpolate02 || interpolate12) ? linear_interpolate_color(x, startX, startColor, endX, endColor) : startColor;
-            const real32 z = linear_interpolate(x, startX, 1/startZ, endX, 1/endZ);
+            const f32 z = linear_interpolate(x, startX, 1/startZ, endX, 1/endZ);
             screen_draw::PutPixelNDC({col, x, y}, 1/z);
         }
     }
 }
 
 static void
-ShadeTriangleInMode(const vertex3& v0, const vertex3& v1, const vertex3& v2, const point_light& light, real32 ambientIntensity, ShadingOption option)
+ShadeTriangleInMode(const vertex3& v0, const vertex3& v1, const vertex3& v2, const point_light& light, f32 ambientIntensity, ShadingOption option)
 {
     switch (option)
     {
@@ -499,7 +499,7 @@ IsBackface(const vec3f& v0, const vec3f& v1, const vec3f& v2)
 }
 
 static ClippedTriangle
-ProcessTriangle(int32 index, Object3D *O, const mat4x4& transform, const mat4x4& rot, bool cullBackfaces = true)
+ProcessTriangle(i32 index, Object3D *O, const mat4x4& transform, const mat4x4& rot, bool cullBackfaces = true)
 {
     int i0 = O->ObjectModel->vertexIndices[index * 3];
     int i1 = O->ObjectModel->vertexIndices[index * 3 + 1];
@@ -654,7 +654,7 @@ DrawObjectSolidWireframe(Object3D *O)
 }
 
 static void
-DrawObject(uint8 index)
+DrawObject(u8 index)
 {
     if (index >= worldObjects.size() || worldObjects.size() <= 0) return;
 
@@ -799,14 +799,14 @@ void
 OnLaunch(PlatformScreenDevice screenDevice, const std::vector<std::string>& objects)
 {
     globalScreenDevice = screenDevice;
-    globalDepthBuffer = new real32[globalScreenDevice.width * globalScreenDevice.height];
+    globalDepthBuffer = new f32[globalScreenDevice.width * globalScreenDevice.height];
     globalRenderMode = RENDER_SOLID;
     globalShadingMode = SHADE_FLAT;
     globalOmniLight = point_light({-4, 10, 8}, 0.8f, 10.0f);
     globalAmbientLight = {0.2f};
 
-    real32 vFov = 20.0f;
-    real32 focalLength = 2.0f;
+    f32 vFov = 20.0f;
+    f32 focalLength = 2.0f;
     vec3f origin = {0,0,0};
     globalCamera = camera(origin, focalLength, vFov, globalScreenDevice.aspectRatio, I_MATRIX_3X3);
 
@@ -840,7 +840,7 @@ OnShutdown()
 }
 
 void
-UpdateRenderLoop(real32 deltaTime)
+UpdateRenderLoop(f32 deltaTime)
 {
     globalDeltaTime = deltaTime;
     screen_draw::BlackoutScreenBuffer(BLACK);

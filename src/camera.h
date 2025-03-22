@@ -1,4 +1,6 @@
-#pragma once
+#ifndef CAMERH_H
+#define CAMERA_H
+
 #include "math.h"
 #include "object3d.h"
 
@@ -33,11 +35,11 @@ private:
     vec3f foreward_;            // Vector pointing in the "forward" direction from the camera's perspective.
     vec3f up_;                  // Vector pointing in the "up" direction from the camera's perspective.
     vec3f right_;               // Vector pointing in the "right" direction from the camera's perspective.
-    real32 focalLength_;        // Distance from the camera to the center of the viewport.
-    real32 vFov_;               // Viewing angle from the top to the bottom of the viewport.
-    real32 aspectRatio_;        // Ratio between the width and the height of the viewport.
-    real32 viewportWidth_;      // Width of the viewport.
-    real32 viewportHeight_;     // Height of the viewport.
+    f32 focalLength_;        // Distance from the camera to the center of the viewport.
+    f32 vFov_;               // Viewing angle from the top to the bottom of the viewport.
+    f32 aspectRatio_;        // Ratio between the width and the height of the viewport.
+    f32 viewportWidth_;      // Width of the viewport.
+    f32 viewportHeight_;     // Height of the viewport.
 
 public:
     camera(const vec3f& origin, float focalLength, float vFov, float aspectRatio, const mat3x3& basis) 
@@ -65,9 +67,9 @@ public:
         };
     }
     const vec3f& CameraOrigin() const { return origin_; }
-    real32 CameraFocalLength() const { return focalLength_; }
-    real32 CameraViewportWidth() const { return viewportWidth_; }
-    real32 CameraViewportHeight() const { return viewportHeight_; }
+    f32 CameraFocalLength() const { return focalLength_; }
+    f32 CameraViewportWidth() const { return viewportWidth_; }
+    f32 CameraViewportHeight() const { return viewportHeight_; }
     
     bool ObjectInFrustum(Object3D *O) const 
     {
@@ -99,7 +101,7 @@ public:
         move.r3 = {position.x, position.y, position.z, 1};
         viewMatrix_ *= move;
     }
-    void RotateYBy(real32 deg)
+    void RotateYBy(f32 deg)
     {
         viewMatrix_ *= get_y_rotation_mat_inverse(deg);
     }
@@ -144,7 +146,7 @@ private:
 
 struct FrustumPointResults
 {
-    real32 side;
+    f32 side;
     plane p;
 };
 
@@ -318,3 +320,5 @@ ClipTriangle(const vertex3& v0, const vertex3& v1, const vertex3& v2, const frus
     }
     return results;
 }
+
+#endif // CAMERA_H

@@ -1,12 +1,11 @@
-// vec3.hpp
-#pragma once
+#ifndef MATH_H
+#define MATH_H
+
 #include <cmath>
 #include <limits>
 #include <iostream>
 #include <iomanip>
 #include <algorithm>
-
-// TODO: use templates
 
 const float pi = 3.14159f;
 const float infinity = std::numeric_limits<float>::infinity();
@@ -389,7 +388,6 @@ struct plane
     float distance; // To origin (ie what k scalar you need for kN to be on the plane)
 };
 
-// TODO: Take notes on this plane representation and its intersection tests
 // returns 0 for on the plane -a for behind and +a for in front
 inline constexpr float
 plane_point_intersect(const plane& Plane, const point3f& p)
@@ -701,3 +699,5 @@ gauss_inverse(const mat4x4& matrix)
 
     return identity;
 }
+
+#endif // MATH_H

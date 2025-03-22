@@ -1,4 +1,6 @@
-#pragma once
+#ifndef OBJECT3D_H
+#define OBJECT3D_H
+
 #include <cassert>
 #include <fstream>
 #include <sstream>
@@ -41,11 +43,11 @@ struct Model3D
     color4 *VertexColors;
 
     // These form triangles
-    int32 *vertexIndices;
-    int32 *normalIndices;
+    i32 *vertexIndices;
+    i32 *normalIndices;
 
-    uint32 vn;  // vertex count
-    uint32 in;  // index count
+    u32 vn;  // vertex count
+    u32 in;  // index count
 };
 
 /*
@@ -58,8 +60,8 @@ public:
     Model3D *ObjectModel;
     sphere BoundingSphere;
     vec3f position;
-    uint32 ID;
-    real32 scale;
+    u32 ID;
+    f32 scale;
 
     // should we really return a copy? yes?
     const sphere ObjectBoundingSphere() const
@@ -88,18 +90,18 @@ public:
         return rotation;
     }
 
-    void RotateObjectX(real32 deg)
+    void RotateObjectX(f32 deg)
     {
         mat4x4 RotationX = get_x_rotation_mat(deg);
         rotation *= RotationX;
     }
-    void RotateObjectY(real32 deg)
+    void RotateObjectY(f32 deg)
     {
         mat4x4 RotationY = get_y_rotation_mat(deg);
         rotation *= RotationY;
     }
 
-    void RotateObjectZ(real32 deg)
+    void RotateObjectZ(f32 deg)
     {
         mat4x4 RotationZ = get_z_rotation_mat(deg);
         rotation *= RotationZ;
@@ -107,7 +109,7 @@ public:
 };
 
 static Object3D *
-CreateCube(const vec3f& position, real32 size = 1, uint32 ID = 0xFFFFFFFF)
+CreateCube(const vec3f& position, f32 size = 1, u32 ID = 0xFFFFFFFF)
 {
     Model3D *Model = new Model3D;
     vec3f *VertexPositions = new vec3f[24]
@@ -131,7 +133,7 @@ CreateCube(const vec3f& position, real32 size = 1, uint32 ID = 0xFFFFFFFF)
     };
 
     // Winding counter-clockwise
-    int32 *Indices = new int32[36]
+    i32 *Indices = new i32[36]
     { 
         0, 1, 2,    0, 2, 3,    // FRONT
         4, 5, 6,    4, 6, 7,    // RIGHT
@@ -151,7 +153,7 @@ CreateCube(const vec3f& position, real32 size = 1, uint32 ID = 0xFFFFFFFF)
         -VECTOR_J3, -VECTOR_J3, -VECTOR_J3, -VECTOR_J3  // BOTTOM
     };
 
-    int32 *normalIndices = new int32[36]
+    i32 *normalIndices = new i32[36]
     { 
         0, 1, 2,    0, 2, 3,    // FRONT
         4, 5, 6,    4, 6, 7,    // RIGHT
@@ -177,7 +179,7 @@ CreateCube(const vec3f& position, real32 size = 1, uint32 ID = 0xFFFFFFFF)
     Cube->rotation = I_MATRIX_4X4;
 
     vec3f average_center = {0, 0, 0};
-    real32 radius = 0.0f;
+    f32 radius = 0.0f;
     for (int i = 0; i < Cube->ObjectModel->vn; ++i)
     {
         average_center += Cube->ObjectModel->VertexPositions[i];
@@ -186,11 +188,11 @@ CreateCube(const vec3f& position, real32 size = 1, uint32 ID = 0xFFFFFFFF)
 
     for (int i = 0; i < Cube->ObjectModel->vn; ++i)
     {
-        real32 square_length = length_squared(Cube->ObjectModel->VertexPositions[i] - average_center);
+        f32 square_length = length_squared(Cube->ObjectModel->VertexPositions[i] - average_center);
         radius = square_length > radius ? square_length : radius;
     }
 
-    radius = static_cast<real32>(std::sqrt(radius)) * size;
+    radius = static_cast<f32>(std::sqrt(radius)) * size;
 
     Cube->BoundingSphere = {average_center, radius};
 
@@ -201,7 +203,7 @@ CreateCube(const vec3f& position, real32 size = 1, uint32 ID = 0xFFFFFFFF)
 // Obj Parser ------------------------------------------------------------------------
 
 Object3D *
-LoadObjectFromOBJ(std::string name, const vec3f& position, real32 size)
+LoadObjectFromOBJ(std::string name, const vec3f& position, f32 size)
 {
     std::string filePath = "./data/" + name;
     std::ifstream objFile(filePath);
@@ -220,8 +222,8 @@ LoadObjectFromOBJ(std::string name, const vec3f& position, real32 size)
     std::string line;
     std::vector<vec3f> vertices;
     std::vector<vec3f> normals;
-    std::vector<int32> vertexIndices;
-    std::vector<int32> normalIndices;
+    std::vector<i32> vertexIndices;
+    std::vector<i32> normalIndices;
     while (std::getline(objFile, line))
     {
         std::istringstream stream(line);
@@ -274,8 +276,8 @@ LoadObjectFromOBJ(std::string name, const vec3f& position, real32 size)
         }
         else if (word == "f")
         {
-            std::vector<int32> faceVertexIndices;
-            std::vector<int32> faceNormalIndices;
+            std::vector<i32> faceVertexIndices;
+            std::vector<i32> faceNormalIndices;
             try
             {
                 while(stream >> word)
@@ -328,7 +330,7 @@ LoadObjectFromOBJ(std::string name, const vec3f& position, real32 size)
                 }
                 else if (faceVertexIndices.size() > 4)
                 {
-                    int32 pivotVertex = faceVertexIndices[0];
+                    i32 pivotVertex = faceVertexIndices[0];
                     for (size_t i = 1; i < faceVertexIndices.size() - 1; ++i)
                     {
                         vertexIndices.push_back(pivotVertex);
@@ -338,7 +340,7 @@ LoadObjectFromOBJ(std::string name, const vec3f& position, real32 size)
                     
                     if (faceNormalIndices.size() > 4)
                     {
-                        int32 pivotNormal = faceNormalIndices[0];
+                        i32 pivotNormal = faceNormalIndices[0];
                         for (size_t i = 1; i < faceNormalIndices.size() - 1; ++i)
                         {
                             normalIndices.push_back(pivotNormal);
@@ -399,8 +401,8 @@ LoadObjectFromOBJ(std::string name, const vec3f& position, real32 size)
     vec3f *vertexPositions = new vec3f[vertices.size()];
     vec3f *vertexNormals = new vec3f[normals.size()];
     color4 *vertexColors = new color4[vertices.size()];
-    int32 *vertexIndicesTemp = new int[vertexIndices.size()];
-    int32 *normalIndicesTemp = new int[normalIndices.size()];
+    i32 *vertexIndicesTemp = new int[vertexIndices.size()];
+    i32 *normalIndicesTemp = new int[normalIndices.size()];
 
     Object3D *newObject = new Object3D;
     newObject->rotation = I_MATRIX_4X4;
@@ -415,10 +417,10 @@ LoadObjectFromOBJ(std::string name, const vec3f& position, real32 size)
         origin /= vertices.size();
     }
 
-    real32 radius = 0.f;
+    f32 radius = 0.f;
     for (const auto& v : vertices)
     {
-        real32 square_length = length_squared(v - origin);
+        f32 square_length = length_squared(v - origin);
         radius = square_length > radius ? square_length : radius;
     }
     radius = std::sqrt(radius);
@@ -486,3 +488,5 @@ DestroyObject3D(Object3D *WorldObject)
 
     WorldObject = nullptr;
 }
+
+#endif // OBJECT3D_H

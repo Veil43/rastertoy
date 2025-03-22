@@ -5,7 +5,6 @@
 
 #include "platform.h"
 
-// TODO: add help function
 struct sdl_render_resources
 {
     SDL_Window *window;
@@ -23,14 +22,14 @@ struct sdl_render_resources
 
 static PlatformState WindowState = WINDOW_RUNNING;
 static bool SDLCursorShown = true;
-static const int32 WINDOW_WIDTH = 1280;
-static const real32 WINDOW_ASPECT_RATIO = 16.0f / 9.0f;
+static const i32 WINDOW_WIDTH = 1280;
+static const f32 WINDOW_ASPECT_RATIO = 16.0f / 9.0f;
 static const std::string CORRECT_USAGE_STRING = "Correct Usage: ./sdl2_rastertoy.exe [list of obj files]";
 
 static bool SDLInitializeVideo();
 [[nodiscard]] static sdl_render_resources SDLCreateRenderingResourses
 (
-    const char *windowName, int32 positionX,int32 positionY, int32 windowWidth, real32 aspectRatio
+    const char *windowName, i32 positionX,i32 positionY, i32 windowWidth, f32 aspectRatio
 );
 static void SDLRenderBackBuffer(const sdl_render_resources& sdlResources);
 static void SDLReleaseResources(sdl_render_resources& sdlResources);
@@ -208,8 +207,8 @@ SDLCreateRenderingResourses(const char *windowName,
 
 [[nodiscard]] static PlatformScreenDevice
 CreatePlatformScreenDevice(void * backBufferMemory,
-                     int32 width, int32 height,
-                     real32 aspectRatio, int32 bytesPerPixel)
+                     i32 width, i32 height,
+                     f32 aspectRatio, i32 bytesPerPixel)
 {
     return
     {

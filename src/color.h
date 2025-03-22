@@ -1,4 +1,5 @@
-#pragma once
+#ifndef COLOR_H
+#define COLOR_H
 
 /*
 4 bytes
@@ -129,3 +130,5 @@ operator*=(color4& c, float i)
     c = i * c;
     return c;
 }
+
+#endif // COLOR_H
