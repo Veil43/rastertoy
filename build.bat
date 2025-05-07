@@ -36,6 +36,7 @@ if /i "%MODE%"=="debug" (
 mkdir %TARGET_DIR%
 pushd %TARGET_DIR%
 cl %COMMON_FLAGS% %BUILD_FLAGS% %SRC_DIR%\sdl2_rastertoy.cpp %SRC_DIR%\rastertoy.cpp %LIBS%
+copy "%LIB_DIR%\SDL2.dll" .
 popd
 
 endlocal
