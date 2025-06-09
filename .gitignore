@@ -2,7 +2,6 @@
 .vs
 debug
 release
-data
 release.bat
 debug.bat
 run.bat
